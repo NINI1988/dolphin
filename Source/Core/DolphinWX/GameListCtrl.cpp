@@ -52,11 +52,28 @@
 #include "DolphinWX/ISOProperties.h"
 #include "DolphinWX/Main.h"
 #include "DolphinWX/WxUtils.h"
+#include "DolphinWX\ExtInfo\wiitdbReader.h"
 
 size_t CGameListCtrl::m_currentItem = 0;
 size_t CGameListCtrl::m_numberItem = 0;
 std::string CGameListCtrl::m_currentFilename;
 static bool sorted = false;
+
+static int orderSet(std::set<std::string> set1, std::set<std::string> set2) {
+	auto it1 = set1.begin();
+	auto it2 = set2.begin();
+	auto it1end = set1.end();
+	auto it2end = set2.end();
+	for (it1, it2; it1 != it1end && it2 != it2end; it1++, it2++) {
+		int result = strcasecmp(it1->c_str(), it2->c_str());
+		if (result != 0) return result;
+	}
+	int size1 = set1.size();
+	int size2 = set2.size();
+	int size = size1;
+	if (size2 < size1)size = size2;
+	return (size1 - size2);
+}
 
 static int CompareGameListItems(const GameListItem* iso1, const GameListItem* iso2,
                                 long sortData = CGameListCtrl::COLUMN_TITLE)
@@ -128,6 +145,18 @@ static int CompareGameListItems(const GameListItem* iso1, const GameListItem* is
 				return 0;
 		}
 			break;
+	case CGameListCtrl::COLUMN_GENRE:
+		return strcasecmp(iso1->GetGenre().c_str(), iso2->GetGenre().c_str()) * t;
+	case CGameListCtrl::COLUMN_DESCRIPTION:
+		return strcasecmp(iso1->GetDescription().c_str(), iso2->GetDescription().c_str()) * t;
+	case CGameListCtrl::COLUMN_ONLINEPLAYERS:
+		return (iso1->GetOnlinePlayers() - iso2->GetOnlinePlayers()) * t;
+	case CGameListCtrl::COLUMN_PLAYERS:
+		return (iso1->GetPlayers() - iso2->GetPlayers()) * t;
+	case CGameListCtrl::COLUMN_REQUIREDCONTROLS: 
+		return orderSet(iso1->GetRequiredControls(), iso2->GetRequiredControls())*t;
+	case CGameListCtrl::COLUMN_OPTIONALCONTROLS: 
+		return orderSet(iso1->GetOptionalControls(), iso2->GetOptionalControls())*t;
 	}
 
 	return 0;
@@ -260,6 +289,12 @@ void CGameListCtrl::Update()
 		InsertColumn(COLUMN_TITLE, _("Title"));
 
 		InsertColumn(COLUMN_MAKER, _("Maker"));
+		InsertColumn(COLUMN_GENRE, _("Genre"));
+		InsertColumn(COLUMN_DESCRIPTION, _("Description"));
+		InsertColumn(COLUMN_ONLINEPLAYERS, _("OnlinePlayers"));
+		InsertColumn(COLUMN_PLAYERS, _("Players"));
+		InsertColumn(COLUMN_REQUIREDCONTROLS, _("RequiredControls"));
+		InsertColumn(COLUMN_OPTIONALCONTROLS, _("OptionalControls"));
 		InsertColumn(COLUMN_FILENAME, _("File"));
 		InsertColumn(COLUMN_ID, _("ID"));
 		InsertColumn(COLUMN_COUNTRY, "");
@@ -280,6 +315,12 @@ void CGameListCtrl::Update()
 		SetColumnWidth(COLUMN_BANNER, SConfig::GetInstance().m_showBannerColumn ? 96 + platform_padding : 0);
 		SetColumnWidth(COLUMN_TITLE, 175 + platform_padding);
 		SetColumnWidth(COLUMN_MAKER, SConfig::GetInstance().m_showMakerColumn ? 150 + platform_padding : 0);
+		SetColumnWidth(COLUMN_GENRE, SConfig::GetInstance().m_showGenreColumn ? 150 + platform_padding : 0);
+		SetColumnWidth(COLUMN_DESCRIPTION, SConfig::GetInstance().m_showDescriptionColumn ? 150 + platform_padding : 0);
+		SetColumnWidth(COLUMN_ONLINEPLAYERS, SConfig::GetInstance().m_showOnlinePlayersColumn ? 150 + platform_padding : 0);
+		SetColumnWidth(COLUMN_PLAYERS, SConfig::GetInstance().m_showPlayersColumn ? 150 + platform_padding : 0);
+		SetColumnWidth(COLUMN_REQUIREDCONTROLS, SConfig::GetInstance().m_showRequiredControlsColumn ? 150 + platform_padding : 0);
+		SetColumnWidth(COLUMN_OPTIONALCONTROLS, SConfig::GetInstance().m_showOptionalControlsColumn ? 150 + platform_padding : 0);
 		SetColumnWidth(COLUMN_FILENAME, SConfig::GetInstance().m_showFileNameColumn ? 100 + platform_padding : 0);
 		SetColumnWidth(COLUMN_ID, SConfig::GetInstance().m_showIDColumn ? 75 + platform_padding : 0);
 		SetColumnWidth(COLUMN_COUNTRY, SConfig::GetInstance().m_showRegionColumn ? 32 + platform_padding : 0);
@@ -355,6 +396,23 @@ static wxString NiceSizeFormat(u64 _size)
 	return StrToWxStr(StringFromFormat("%s %s", value.c_str(), unit_symbols[unit]));
 }
 
+std::string Join(const std::set<std::string>& elements, const char* const separator)
+{
+	switch (elements.size())
+	{
+	case 0:
+		return "";
+	case 1:
+		return elements.begin()->c_str();
+	default:
+		auto iter = elements.end();
+		std::ostringstream os;
+		std::copy(elements.begin(), --iter, std::ostream_iterator<std::string>(os, separator));
+		os << *elements.rbegin();
+		return os.str();
+	}
+}
+
 // Update the column content of the item at _Index
 void CGameListCtrl::UpdateItemAtColumn(long _Index, int column)
 {
@@ -414,6 +472,24 @@ void CGameListCtrl::UpdateItemAtColumn(long _Index, int column)
 		case COLUMN_ID:
 			SetItem(_Index, COLUMN_ID, rISOFile.GetUniqueID(), -1);
 			break;
+	case COLUMN_GENRE:
+		SetItem(_Index, COLUMN_GENRE, StrToWxStr(rISOFile.GetGenre()), -1);
+		break;
+	case COLUMN_DESCRIPTION:
+		SetItem(_Index, COLUMN_DESCRIPTION, StrToWxStr(rISOFile.GetDescription()), -1);
+		break;
+	case COLUMN_ONLINEPLAYERS:
+		SetItem(_Index, COLUMN_ONLINEPLAYERS, StrToWxStr(std::to_string(rISOFile.GetOnlinePlayers())), -1);
+		break;
+	case COLUMN_PLAYERS:
+		SetItem(_Index, COLUMN_PLAYERS, StrToWxStr(std::to_string(rISOFile.GetPlayers())), -1);
+		break;
+	case COLUMN_REQUIREDCONTROLS:
+		SetItem(_Index, COLUMN_REQUIREDCONTROLS, StrToWxStr(Join(rISOFile.GetRequiredControls(), ",")), -1);
+		break;
+	case COLUMN_OPTIONALCONTROLS:
+		SetItem(_Index, COLUMN_OPTIONALCONTROLS, StrToWxStr(Join(rISOFile.GetOptionalControls(), ",")), -1);
+		break;
 	}
 }
 
@@ -641,6 +717,14 @@ void CGameListCtrl::ScanForISOs()
 		}
 	}
 
+	if (wxFileExists(File::GetUserPath(D_LOAD_IDX) + "wiitdb.xml")) {
+		wiitdbReader extInfoReader;
+		std::string file = File::GetUserPath(D_LOAD_IDX) + "wiitdb.xml";
+		const char *cstr = file.c_str();
+		extInfoReader.FillExtendedInfos(cstr, m_ISOFiles);
+
+	}
+
 	std::sort(m_ISOFiles.begin(), m_ISOFiles.end());
 }
 
@@ -648,7 +732,7 @@ void CGameListCtrl::OnColBeginDrag(wxListEvent& event)
 {
 	const int column_id = event.GetColumn();
 
-	if (column_id != COLUMN_TITLE && column_id != COLUMN_MAKER && column_id != COLUMN_FILENAME)
+	if (column_id != COLUMN_TITLE && column_id != COLUMN_MAKER && column_id != COLUMN_FILENAME  && column_id != COLUMN_DESCRIPTION  && column_id != COLUMN_REQUIREDCONTROLS  && column_id != COLUMN_OPTIONALCONTROLS  && column_id != COLUMN_GENRE)
 		event.Veto();
 }
 
@@ -1325,6 +1409,12 @@ void CGameListCtrl::AutomaticColumnWidth()
 			+ GetColumnWidth(COLUMN_ID)
 			+ GetColumnWidth(COLUMN_COUNTRY)
 			+ GetColumnWidth(COLUMN_SIZE)
+			+ GetColumnWidth(COLUMN_GENRE)
+			+ GetColumnWidth(COLUMN_DESCRIPTION)
+			+ GetColumnWidth(COLUMN_ONLINEPLAYERS)
+			+ GetColumnWidth(COLUMN_PLAYERS)
+			+ GetColumnWidth(COLUMN_REQUIREDCONTROLS)
+			+ GetColumnWidth(COLUMN_OPTIONALCONTROLS)
 			+ GetColumnWidth(COLUMN_EMULATION_STATE));
 
 		// We hide the Maker column if the window is too small
