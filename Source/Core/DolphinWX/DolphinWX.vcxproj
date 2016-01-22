@@ -85,6 +85,11 @@
     <ClCompile Include="Debugger\RegisterWindow.cpp" />
     <ClCompile Include="Debugger\WatchView.cpp" />
     <ClCompile Include="Debugger\WatchWindow.cpp" />
+    <ClCompile Include="ExtInfo\TinyXml\tinystr.cpp" />
+    <ClCompile Include="ExtInfo\TinyXml\tinyxml.cpp" />
+    <ClCompile Include="ExtInfo\TinyXml\tinyxmlerror.cpp" />
+    <ClCompile Include="ExtInfo\TinyXml\tinyxmlparser.cpp" />
+    <ClCompile Include="ExtInfo\WiitdbReader.cpp" />
     <ClCompile Include="NetPlay\ChangeGameDialog.cpp" />
     <ClCompile Include="NetPlay\NetPlaySetupFrame.cpp" />
     <ClCompile Include="NetPlay\NetWindow.cpp" />
@@ -123,6 +128,9 @@
     <ClInclude Include="Config\InterfaceConfigPane.h" />
     <ClInclude Include="Config\PathConfigPane.h" />
     <ClInclude Include="Config\WiiConfigPane.h" />
+    <ClInclude Include="ExtInfo\TinyXml\tinystr.h" />
+    <ClInclude Include="ExtInfo\TinyXml\tinyxml.h" />
+    <ClInclude Include="ExtInfo\WiitdbReader.h" />
     <ClInclude Include="NetPlay\ChangeGameDialog.h" />
     <ClInclude Include="NetPlay\NetPlaySetupFrame.h" />
     <ClInclude Include="NetPlay\PadMapDialog.h" />

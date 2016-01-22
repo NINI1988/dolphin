@@ -1,4 +1,4 @@
-#include "wiitdbReader.h"
+#include "WiitdbReader.h"
 
 #include <iostream>
 #include <string>
@@ -6,19 +6,8 @@
 #include "TinyXml\tinyxml.h"
 using namespace std;
 
-#include "ExtInfo.h"
+//#include "ExtInfo.h"
 #include <unordered_map>
-
-typedef std::unordered_map<std::string, ExtInfo> ExtInfoList;
-
-wiitdbReader::wiitdbReader()
-{
-}
-
-
-wiitdbReader::~wiitdbReader()
-{
-}
 
 void readGameControllers(TiXmlElement* xml, ExtInfo& item) {
 	for (xml; xml; xml = xml->NextSiblingElement())
@@ -58,16 +47,19 @@ void readGameElement(TiXmlElement* xml, ExtInfoList& extInfos) {
 	extInfos[item.id]=item;
 }
 
-bool wiitdbReader::FillExtendedInfos(const char* pFilename, std::vector<GameListItem*> gameList) {
-	TiXmlDocument doc(pFilename);
-	bool loadOkay = doc.LoadFile();
+bool WiitdbReader::LoadExtendedInfos()
+{
+	std::string filename = WiitdbReader::getExtInfoFilename();
+	const char* pFilename = filename.c_str();
+	TiXmlDocument doc;
+	bool loadOkay = doc.LoadFile(pFilename);
 	if (loadOkay)
 	{
 
-		ExtInfoList extInfoList;
+		
 		//ExtInfoList extInfos;
 		printf("\n%s:\n", pFilename);
-		
+
 		TiXmlElement* pElem;
 
 		{//root
@@ -79,37 +71,42 @@ bool wiitdbReader::FillExtendedInfos(const char* pFilename, std::vector<GameList
 
 		// block: games
 		{
-			pElem=pElem->FirstChildElement("game");
+			pElem = pElem->FirstChildElement("game");
 			for (pElem; pElem; pElem = pElem->NextSiblingElement("game"))
 			{
-				readGameElement(pElem, extInfoList);
+				readGameElement(pElem, m_extInfoList);
 			}
 		}
-
-		for (auto &pGameListItem : gameList) // access by reference to avoid copying
-		{
-
-			string id=pGameListItem->GetUniqueID();
-			if (id == "HACA01") {
-				id = "HACA01";
-			}
-			auto elem = extInfoList.find(id);
-			if (elem != extInfoList.end()) {
-				ExtInfo extInfo = elem->second;
-
-				pGameListItem->SetGenre(extInfo.genre);
-				pGameListItem->SetOnlinePlayers(extInfo.onlinePlayers);
-				pGameListItem->SetOptionalControls(extInfo.optionalControllers);
-				pGameListItem->SetPlayers(extInfo.players);
-				pGameListItem->SetRequiredControls(extInfo.requiredControllers);
-		
-			}
-		}
-
 	}
 	else
 	{
 		printf("Failed to load file \"%s\"\n", pFilename);
 	}
-	return true;
+	return loadOkay;
+}
+
+void WiitdbReader::FillExtendedInfo(GameListItem* pGameListItem) {
+
+	string id = pGameListItem->GetUniqueID();
+	auto elem = m_extInfoList.find(id);
+	if (elem != m_extInfoList.end()) {
+		ExtInfo& extInfo = elem->second;
+
+		pGameListItem->SetGenre(extInfo.genre);
+		pGameListItem->SetOnlinePlayers(extInfo.onlinePlayers);
+		pGameListItem->SetOptionalControls(extInfo.optionalControllers);
+		pGameListItem->SetPlayers(extInfo.players);
+		pGameListItem->SetRequiredControls(extInfo.requiredControllers);
+
+	}
+
+}
+
+void WiitdbReader::FillExtendedInfos( std::vector<GameListItem*> gameList) {
+	
+	for (auto &pGameListItem : gameList) // access by reference to avoid copying
+	{
+		FillExtendedInfo(pGameListItem);
+	}
+
 }

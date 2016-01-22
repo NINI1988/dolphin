@@ -210,6 +210,12 @@ void SConfig::SaveGameListSettings(IniFile& ini)
 	gamelist->Set("ColumnPlatform", m_showSystemColumn);
 	gamelist->Set("ColumnBanner", m_showBannerColumn);
 	gamelist->Set("ColumnNotes", m_showMakerColumn);
+	gamelist->Set("ColumnGenre", m_showGenreColumn);
+	gamelist->Set("ColumnDescription", m_showDescriptionColumn);
+	gamelist->Set("ColumnOnlinePlayers", m_showOnlinePlayersColumn);
+	gamelist->Set("ColumnPlayers", m_showPlayersColumn);
+	gamelist->Set("ColumnRequiredControls", m_showRequiredControlsColumn);
+	gamelist->Set("ColumnOptionalControls", m_showOptionalControlsColumn);
 	gamelist->Set("ColumnFileName", m_showFileNameColumn);
 	gamelist->Set("ColumnID", m_showIDColumn);
 	gamelist->Set("ColumnRegion", m_showRegionColumn);
@@ -460,14 +466,20 @@ void SConfig::LoadGameListSettings(IniFile& ini)
 	gamelist->Get("ColorCompressed", &m_ColorCompressed, true);
 
 	// Gamelist columns toggles
-	gamelist->Get("ColumnPlatform",   &m_showSystemColumn,  true);
-	gamelist->Get("ColumnBanner",     &m_showBannerColumn,  true);
-	gamelist->Get("ColumnNotes",      &m_showMakerColumn,   true);
-	gamelist->Get("ColumnFileName",   &m_showFileNameColumn, false);
-	gamelist->Get("ColumnID",         &m_showIDColumn,      false);
-	gamelist->Get("ColumnRegion",     &m_showRegionColumn,  true);
-	gamelist->Get("ColumnSize",       &m_showSizeColumn,    true);
-	gamelist->Get("ColumnState",      &m_showStateColumn,   true);
+    gamelist->Get("ColumnPlatform",         &m_showSystemColumn,            true);
+    gamelist->Get("ColumnBanner",           &m_showBannerColumn,            true);
+    gamelist->Get("ColumnNotes",            &m_showMakerColumn,             true);
+    gamelist->Get("ColumnGenre",            &m_showGenreColumn,             false);
+    gamelist->Get("ColumnDescription",      &m_showDescriptionColumn,       false);
+    gamelist->Get("ColumnOnlinePlayers",    &m_showOnlinePlayersColumn,     false);
+    gamelist->Get("ColumnPlayers",          &m_showPlayersColumn,           false);
+    gamelist->Get("ColumnRequiredControls", &m_showRequiredControlsColumn,  false);
+    gamelist->Get("ColumnOptionalControls", &m_showOptionalControlsColumn,  false);
+    gamelist->Get("ColumnFileName",         &m_showFileNameColumn,          false);
+    gamelist->Get("ColumnID",               &m_showIDColumn,                false);
+    gamelist->Get("ColumnRegion",           &m_showRegionColumn,            true);
+    gamelist->Get("ColumnSize",             &m_showSizeColumn,              true);
+    gamelist->Get("ColumnState",            &m_showStateColumn,             true);
 }
 
 void SConfig::LoadCoreSettings(IniFile& ini)

@@ -51,14 +51,14 @@ public:
 		COLUMN_FILENAME,
 		COLUMN_ID,
 		COLUMN_GENRE,
-		COLUMN_DESCRIPTION,
-		COLUMN_ONLINEPLAYERS,
 		COLUMN_PLAYERS,
+		COLUMN_ONLINEPLAYERS,
 		COLUMN_REQUIREDCONTROLS,
 		COLUMN_OPTIONALCONTROLS,
 		COLUMN_COUNTRY,
 		COLUMN_SIZE,
 		COLUMN_EMULATION_STATE,
+		COLUMN_DESCRIPTION,
 		NUMBER_OF_COLUMN
 	};
 
@@ -107,6 +107,8 @@ private:
 	void OnMultiCompressISO(wxCommandEvent& event);
 	void OnMultiDecompressISO(wxCommandEvent& event);
 	void OnChangeDisc(wxCommandEvent& event);
+
+	bool CGameListCtrl::isColumnVisible(int col);
 
 	void CompressSelection(bool _compress);
 	void AutomaticColumnWidth();

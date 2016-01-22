@@ -199,6 +199,11 @@
     <ClCompile Include="NetPlay\PadMapDialog.cpp">
       <Filter>GUI\NetPlay</Filter>
     </ClCompile>
+    <ClCompile Include="ExtInfo\TinyXml\tinystr.cpp" />
+    <ClCompile Include="ExtInfo\TinyXml\tinyxml.cpp" />
+    <ClCompile Include="ExtInfo\TinyXml\tinyxmlerror.cpp" />
+    <ClCompile Include="ExtInfo\TinyXml\tinyxmlparser.cpp" />
+    <ClCompile Include="ExtInfo\WiitdbReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h" />
@@ -363,6 +368,9 @@
     <ClInclude Include="NetPlay\PadMapDialog.h">
       <Filter>GUI\NetPlay</Filter>
     </ClInclude>
+    <ClInclude Include="ExtInfo\TinyXml\tinystr.h" />
+    <ClInclude Include="ExtInfo\TinyXml\tinyxml.h" />
+    <ClInclude Include="ExtInfo\WiitdbReader.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

@@ -348,6 +348,18 @@ wxMenuBar* CFrame::CreateMenu()
 	columnsMenu->Check(IDM_SHOW_BANNER, SConfig::GetInstance().m_showBannerColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_MAKER, _("Maker"));
 	columnsMenu->Check(IDM_SHOW_MAKER, SConfig::GetInstance().m_showMakerColumn);
+	columnsMenu->AppendCheckItem(IDM_SHOW_GENRE, _("Genre"));
+	columnsMenu->Check(IDM_SHOW_GENRE, SConfig::GetInstance().m_showGenreColumn);
+	columnsMenu->AppendCheckItem(IDM_SHOW_PLAYERS, _("Players"));
+	columnsMenu->Check(IDM_SHOW_PLAYERS, SConfig::GetInstance().m_showPlayersColumn);
+	columnsMenu->AppendCheckItem(IDM_SHOW_DESCRIPTION, _("Description"));
+	columnsMenu->Check(IDM_SHOW_DESCRIPTION, SConfig::GetInstance().m_showDescriptionColumn);
+	columnsMenu->AppendCheckItem(IDM_SHOW_ONLINEPLAYERS, _("OnlinePlayers"));
+	columnsMenu->Check(IDM_SHOW_ONLINEPLAYERS, SConfig::GetInstance().m_showOnlinePlayersColumn);
+	columnsMenu->AppendCheckItem(IDM_SHOW_REQUIREDCONTROLS, _("RequiredControls"));
+	columnsMenu->Check(IDM_SHOW_REQUIREDCONTROLS, SConfig::GetInstance().m_showRequiredControlsColumn);
+	columnsMenu->AppendCheckItem(IDM_SHOW_OPTIONALCONTROLS, _("OptionalControls"));
+	columnsMenu->Check(IDM_SHOW_OPTIONALCONTROLS, SConfig::GetInstance().m_showOptionalControlsColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_FILENAME, _("File Name"));
 	columnsMenu->Check(IDM_SHOW_FILENAME, SConfig::GetInstance().m_showFileNameColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_ID, _("Game ID"));

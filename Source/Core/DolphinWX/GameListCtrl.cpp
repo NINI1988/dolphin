@@ -45,6 +45,7 @@
 #include "DiscIO/Blob.h"
 #include "DiscIO/Volume.h"
 #include "DiscIO/VolumeCreator.h"
+#include "DolphinWX/ExtInfo/wiitdbReader.h"
 #include "DolphinWX/Frame.h"
 #include "DolphinWX/GameListCtrl.h"
 #include "DolphinWX/Globals.h"
@@ -52,7 +53,6 @@
 #include "DolphinWX/ISOProperties.h"
 #include "DolphinWX/Main.h"
 #include "DolphinWX/WxUtils.h"
-#include "DolphinWX\ExtInfo\wiitdbReader.h"
 
 size_t CGameListCtrl::m_currentItem = 0;
 size_t CGameListCtrl::m_numberItem = 0;
@@ -315,11 +315,11 @@ void CGameListCtrl::Update()
 		SetColumnWidth(COLUMN_BANNER, SConfig::GetInstance().m_showBannerColumn ? 96 + platform_padding : 0);
 		SetColumnWidth(COLUMN_TITLE, 175 + platform_padding);
 		SetColumnWidth(COLUMN_MAKER, SConfig::GetInstance().m_showMakerColumn ? 150 + platform_padding : 0);
-		SetColumnWidth(COLUMN_GENRE, SConfig::GetInstance().m_showGenreColumn ? 150 + platform_padding : 0);
+		SetColumnWidth(COLUMN_GENRE, SConfig::GetInstance().m_showGenreColumn ? 175 + platform_padding : 0);
 		SetColumnWidth(COLUMN_DESCRIPTION, SConfig::GetInstance().m_showDescriptionColumn ? 150 + platform_padding : 0);
-		SetColumnWidth(COLUMN_ONLINEPLAYERS, SConfig::GetInstance().m_showOnlinePlayersColumn ? 150 + platform_padding : 0);
-		SetColumnWidth(COLUMN_PLAYERS, SConfig::GetInstance().m_showPlayersColumn ? 150 + platform_padding : 0);
-		SetColumnWidth(COLUMN_REQUIREDCONTROLS, SConfig::GetInstance().m_showRequiredControlsColumn ? 150 + platform_padding : 0);
+		SetColumnWidth(COLUMN_ONLINEPLAYERS, SConfig::GetInstance().m_showOnlinePlayersColumn ? 90 + platform_padding : 0);
+		SetColumnWidth(COLUMN_PLAYERS, SConfig::GetInstance().m_showPlayersColumn ? 50 + platform_padding : 0);
+		SetColumnWidth(COLUMN_REQUIREDCONTROLS, SConfig::GetInstance().m_showRequiredControlsColumn ? 120 + platform_padding : 0);
 		SetColumnWidth(COLUMN_OPTIONALCONTROLS, SConfig::GetInstance().m_showOptionalControlsColumn ? 150 + platform_padding : 0);
 		SetColumnWidth(COLUMN_FILENAME, SConfig::GetInstance().m_showFileNameColumn ? 100 + platform_padding : 0);
 		SetColumnWidth(COLUMN_ID, SConfig::GetInstance().m_showIDColumn ? 75 + platform_padding : 0);
@@ -478,12 +478,20 @@ void CGameListCtrl::UpdateItemAtColumn(long _Index, int column)
 	case COLUMN_DESCRIPTION:
 		SetItem(_Index, COLUMN_DESCRIPTION, StrToWxStr(rISOFile.GetDescription()), -1);
 		break;
-	case COLUMN_ONLINEPLAYERS:
-		SetItem(_Index, COLUMN_ONLINEPLAYERS, StrToWxStr(std::to_string(rISOFile.GetOnlinePlayers())), -1);
+	case COLUMN_ONLINEPLAYERS: {
+		int c = rISOFile.GetOnlinePlayers();
+		if (c >= 0) {
+			SetItem(_Index, COLUMN_ONLINEPLAYERS, StrToWxStr(std::to_string(c)), -1);
+		}
 		break;
-	case COLUMN_PLAYERS:
-		SetItem(_Index, COLUMN_PLAYERS, StrToWxStr(std::to_string(rISOFile.GetPlayers())), -1);
+	}
+	case COLUMN_PLAYERS: {
+		int c = rISOFile.GetPlayers();
+		if (c >= 0) {
+			SetItem(_Index, COLUMN_PLAYERS, StrToWxStr(std::to_string(c)), -1);
+		}
 		break;
+	}
 	case COLUMN_REQUIREDCONTROLS:
 		SetItem(_Index, COLUMN_REQUIREDCONTROLS, StrToWxStr(Join(rISOFile.GetRequiredControls(), ",")), -1);
 		break;
@@ -543,6 +551,8 @@ void CGameListCtrl::ScanForISOs()
 {
 	ClearIsoFiles();
 
+	WiitdbReader extInfoReader;
+
 	// Load custom game titles from titles.txt
 	// http://www.gametdb.com/Wii/Downloads
 	std::unordered_map<std::string, std::string> custom_title_map;
@@ -563,6 +573,10 @@ void CGameListCtrl::ScanForISOs()
 			                             StripSpaces(line.substr(equals_index + 1)));
 		}
 		titlestxt.close();
+	}
+
+	if (extInfoReader.ExtInfoFileExists()) {
+		extInfoReader.LoadExtendedInfos();
 	}
 
 	std::vector<std::string> Extensions;
@@ -698,8 +712,11 @@ void CGameListCtrl::ScanForISOs()
 						break;
 				}
 
-				if (list)
-					m_ISOFiles.push_back(iso_file.release());
+				if (list) {
+					GameListItem* pGameListItem = iso_file.release();
+					extInfoReader.FillExtendedInfo(pGameListItem);
+					m_ISOFiles.push_back(pGameListItem);
+				}
 			}
 		}
 	}
@@ -717,22 +734,48 @@ void CGameListCtrl::ScanForISOs()
 		}
 	}
 
-	if (wxFileExists(File::GetUserPath(D_LOAD_IDX) + "wiitdb.xml")) {
-		wiitdbReader extInfoReader;
-		std::string file = File::GetUserPath(D_LOAD_IDX) + "wiitdb.xml";
-		const char *cstr = file.c_str();
-		extInfoReader.FillExtendedInfos(cstr, m_ISOFiles);
-
-	}
-
 	std::sort(m_ISOFiles.begin(), m_ISOFiles.end());
+}
+
+bool CGameListCtrl::isColumnVisible(int col) {
+	switch (col)
+	{
+	case COLUMN_PLATFORM:         return SConfig::GetInstance().m_showSystemColumn;
+	case COLUMN_BANNER:           return SConfig::GetInstance().m_showBannerColumn;
+	case COLUMN_MAKER:            return SConfig::GetInstance().m_showMakerColumn;
+	case COLUMN_GENRE:            return SConfig::GetInstance().m_showGenreColumn;
+	case COLUMN_DESCRIPTION:      return SConfig::GetInstance().m_showDescriptionColumn;
+	case COLUMN_ONLINEPLAYERS:    return SConfig::GetInstance().m_showOnlinePlayersColumn;
+	case COLUMN_PLAYERS:          return SConfig::GetInstance().m_showPlayersColumn;
+	case COLUMN_REQUIREDCONTROLS: return SConfig::GetInstance().m_showRequiredControlsColumn;
+	case COLUMN_OPTIONALCONTROLS: return SConfig::GetInstance().m_showOptionalControlsColumn;
+	case COLUMN_FILENAME:         return SConfig::GetInstance().m_showFileNameColumn;
+	case COLUMN_ID:               return SConfig::GetInstance().m_showIDColumn;
+	case COLUMN_COUNTRY:          return SConfig::GetInstance().m_showRegionColumn;
+	case COLUMN_SIZE:             return SConfig::GetInstance().m_showSizeColumn;
+	case COLUMN_EMULATION_STATE:  return SConfig::GetInstance().m_showStateColumn;
+
+	case COLUMN_TITLE:
+	default:
+		return true;
+	}
 }
 
 void CGameListCtrl::OnColBeginDrag(wxListEvent& event)
 {
 	const int column_id = event.GetColumn();
+	if (column_id != COLUMN_TITLE && 
+		column_id != COLUMN_MAKER && 
+		column_id != COLUMN_FILENAME  && 
+		column_id != COLUMN_DESCRIPTION  && 
+		column_id != COLUMN_REQUIREDCONTROLS  &&
+		column_id != COLUMN_OPTIONALCONTROLS  && 
+		column_id != COLUMN_GENRE && 
+		column_id != COLUMN_PLAYERS && 
+		column_id != COLUMN_ONLINEPLAYERS )
+		event.Veto();
 
-	if (column_id != COLUMN_TITLE && column_id != COLUMN_MAKER && column_id != COLUMN_FILENAME  && column_id != COLUMN_DESCRIPTION  && column_id != COLUMN_REQUIREDCONTROLS  && column_id != COLUMN_OPTIONALCONTROLS  && column_id != COLUMN_GENRE)
+	if (!isColumnVisible(column_id))
 		event.Veto();
 }
 
