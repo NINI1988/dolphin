@@ -348,29 +348,28 @@ wxMenuBar* CFrame::CreateMenu()
 	columnsMenu->Check(IDM_SHOW_BANNER, SConfig::GetInstance().m_showBannerColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_MAKER, _("Maker"));
 	columnsMenu->Check(IDM_SHOW_MAKER, SConfig::GetInstance().m_showMakerColumn);
+	columnsMenu->AppendCheckItem(IDM_SHOW_FILENAME, _("File Name"));
+	columnsMenu->Check(IDM_SHOW_FILENAME, SConfig::GetInstance().m_showFileNameColumn);
+	columnsMenu->AppendCheckItem(IDM_SHOW_ID, _("Game ID"));
+	columnsMenu->Check(IDM_SHOW_ID, SConfig::GetInstance().m_showIDColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_GENRE, _("Genre"));
 	columnsMenu->Check(IDM_SHOW_GENRE, SConfig::GetInstance().m_showGenreColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_PLAYERS, _("Players"));
 	columnsMenu->Check(IDM_SHOW_PLAYERS, SConfig::GetInstance().m_showPlayersColumn);
-	columnsMenu->AppendCheckItem(IDM_SHOW_DESCRIPTION, _("Description"));
-	columnsMenu->Check(IDM_SHOW_DESCRIPTION, SConfig::GetInstance().m_showDescriptionColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_ONLINEPLAYERS, _("OnlinePlayers"));
 	columnsMenu->Check(IDM_SHOW_ONLINEPLAYERS, SConfig::GetInstance().m_showOnlinePlayersColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_REQUIREDCONTROLS, _("RequiredControls"));
 	columnsMenu->Check(IDM_SHOW_REQUIREDCONTROLS, SConfig::GetInstance().m_showRequiredControlsColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_OPTIONALCONTROLS, _("OptionalControls"));
 	columnsMenu->Check(IDM_SHOW_OPTIONALCONTROLS, SConfig::GetInstance().m_showOptionalControlsColumn);
-	columnsMenu->AppendCheckItem(IDM_SHOW_FILENAME, _("File Name"));
-	columnsMenu->Check(IDM_SHOW_FILENAME, SConfig::GetInstance().m_showFileNameColumn);
-	columnsMenu->AppendCheckItem(IDM_SHOW_ID, _("Game ID"));
-	columnsMenu->Check(IDM_SHOW_ID, SConfig::GetInstance().m_showIDColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_REGION, _("Region"));
 	columnsMenu->Check(IDM_SHOW_REGION, SConfig::GetInstance().m_showRegionColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_SIZE, _("File Size"));
 	columnsMenu->Check(IDM_SHOW_SIZE, SConfig::GetInstance().m_showSizeColumn);
 	columnsMenu->AppendCheckItem(IDM_SHOW_STATE, _("State"));
 	columnsMenu->Check(IDM_SHOW_STATE, SConfig::GetInstance().m_showStateColumn);
-
+	columnsMenu->AppendCheckItem(IDM_SHOW_DESCRIPTION, _("Description"));
+	columnsMenu->Check(IDM_SHOW_DESCRIPTION, SConfig::GetInstance().m_showDescriptionColumn);
 
 
 	menubar->Append(viewMenu, _("&View"));
@@ -2007,31 +2006,7 @@ void CFrame::OnChangeColumnsVisible(wxCommandEvent& event)
 {
 	switch (event.GetId())
 	{
-	case IDM_SHOW_SYSTEM:
-		SConfig::GetInstance().m_showSystemColumn = !SConfig::GetInstance().m_showSystemColumn;
-		break;
-	case IDM_SHOW_BANNER:
-		SConfig::GetInstance().m_showBannerColumn = !SConfig::GetInstance().m_showBannerColumn;
-		break;
-	case IDM_SHOW_MAKER:
-		SConfig::GetInstance().m_showMakerColumn = !SConfig::GetInstance().m_showMakerColumn;
-		break;
-	case IDM_SHOW_FILENAME:
-		SConfig::GetInstance().m_showFileNameColumn = !SConfig::GetInstance().m_showFileNameColumn;
-		break;
-	case IDM_SHOW_ID:
-		SConfig::GetInstance().m_showIDColumn = !SConfig::GetInstance().m_showIDColumn;
-		break;
-	case IDM_SHOW_REGION:
-		SConfig::GetInstance().m_showRegionColumn = !SConfig::GetInstance().m_showRegionColumn;
-		break;
-	case IDM_SHOW_SIZE:
-		SConfig::GetInstance().m_showSizeColumn = !SConfig::GetInstance().m_showSizeColumn;
-		break;
-	case IDM_SHOW_STATE:
-		SConfig::GetInstance().m_showStateColumn = !SConfig::GetInstance().m_showStateColumn;
-		break;
-	default: return;
+		case IDM_SHOW_SYSTEM:           SConfig::GetInstance().m_showSystemColumn           = !SConfig::GetInstance().m_showSystemColumn;           break;		case IDM_SHOW_BANNER:           SConfig::GetInstance().m_showBannerColumn           = !SConfig::GetInstance().m_showBannerColumn;           break;		case IDM_SHOW_MAKER:            SConfig::GetInstance().m_showMakerColumn            = !SConfig::GetInstance().m_showMakerColumn;            break;		case IDM_SHOW_FILENAME:         SConfig::GetInstance().m_showFileNameColumn         = !SConfig::GetInstance().m_showFileNameColumn;         break;		case IDM_SHOW_ID:               SConfig::GetInstance().m_showIDColumn               = !SConfig::GetInstance().m_showIDColumn;               break;		case IDM_SHOW_REGION:           SConfig::GetInstance().m_showRegionColumn           = !SConfig::GetInstance().m_showRegionColumn;           break;		case IDM_SHOW_SIZE:             SConfig::GetInstance().m_showSizeColumn             = !SConfig::GetInstance().m_showSizeColumn;             break;		case IDM_SHOW_STATE:            SConfig::GetInstance().m_showStateColumn            = !SConfig::GetInstance().m_showStateColumn;            break;		case IDM_SHOW_GENRE:            SConfig::GetInstance().m_showGenreColumn            = !SConfig::GetInstance().m_showGenreColumn;            break;		case IDM_SHOW_DESCRIPTION:      SConfig::GetInstance().m_showDescriptionColumn      = !SConfig::GetInstance().m_showDescriptionColumn;      break;		case IDM_SHOW_ONLINEPLAYERS:    SConfig::GetInstance().m_showOnlinePlayersColumn    = !SConfig::GetInstance().m_showOnlinePlayersColumn;    break;		case IDM_SHOW_PLAYERS:          SConfig::GetInstance().m_showPlayersColumn          = !SConfig::GetInstance().m_showPlayersColumn;          break;		case IDM_SHOW_REQUIREDCONTROLS: SConfig::GetInstance().m_showRequiredControlsColumn = !SConfig::GetInstance().m_showRequiredControlsColumn; break;		case IDM_SHOW_OPTIONALCONTROLS: SConfig::GetInstance().m_showOptionalControlsColumn = !SConfig::GetInstance().m_showOptionalControlsColumn; break;		default: return;
 	}
 	m_GameListCtrl->Update();
 	SConfig::GetInstance().SaveSettings();

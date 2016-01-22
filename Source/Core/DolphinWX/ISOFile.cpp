@@ -73,6 +73,7 @@ GameListItem::GameListItem(const std::string& _rFileName, const std::unordered_m
 	, m_ImageHeight(0)
 	, m_disc_number(0)
 	, m_has_custom_name(false)
+	, m_has_banner(false)
 	, m_players(-1)
 	, m_onlinePlayers(-1)
 {
@@ -162,23 +163,28 @@ GameListItem::GameListItem(const std::string& _rFileName, const std::unordered_m
 
 	// A bit like the Homebrew Channel icon, except there can be multiple files in a folder with their own icons.
 	// Useful for those who don't want to have a Homebrew Channel-style folder structure.
-	if (ReadPNGBanner(path + name + ".png"))
+	if (ReadPNGBanner(path + name + ".png")) {
+		m_has_banner = true;
 		return;
+	}
 
 	// Homebrew Channel icon. Typical for DOLs and ELFs, but can be also used with volumes.
-	if (ReadPNGBanner(path + "icon.png"))
+	if (ReadPNGBanner(path + "icon.png")) {
+		m_has_banner = true;
 		return;
-
+	}
 	// Volume banner. Typical for everything that isn't a DOL or ELF.
 	if (!m_pImage.empty())
 	{
 		wxImage image(m_ImageWidth, m_ImageHeight, &m_pImage[0], true);
 		m_Bitmap = ScaleBanner(&image);
+		m_has_banner = true;
 		return;
 	}
 
 	// Fallback in case no banner is available.
 	ReadPNGBanner(File::GetSysDirectory() + RESOURCES_DIR + DIR_SEP + "nobanner.png");
+	m_has_banner = false;
 }
 
 GameListItem::~GameListItem()

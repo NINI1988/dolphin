@@ -88,6 +88,11 @@ static int CompareGameListItems(const GameListItem* iso1, const GameListItem* is
 
 	switch (sortData)
 	{
+		case CGameListCtrl::COLUMN_BANNER: {
+			if (iso1->HasBanner() == iso2->HasBanner()) return 0;
+			if (iso1->HasBanner()) return t;
+			return -t;
+		}
 		case CGameListCtrl::COLUMN_TITLE:
 			if (!strcasecmp(iso1->GetName().c_str(), iso2->GetName().c_str()))
 			{
@@ -144,19 +149,19 @@ static int CompareGameListItems(const GameListItem* iso1, const GameListItem* is
 			else
 				return 0;
 		}
-			break;
-	case CGameListCtrl::COLUMN_GENRE:
-		return strcasecmp(iso1->GetGenre().c_str(), iso2->GetGenre().c_str()) * t;
-	case CGameListCtrl::COLUMN_DESCRIPTION:
-		return strcasecmp(iso1->GetDescription().c_str(), iso2->GetDescription().c_str()) * t;
-	case CGameListCtrl::COLUMN_ONLINEPLAYERS:
-		return (iso1->GetOnlinePlayers() - iso2->GetOnlinePlayers()) * t;
-	case CGameListCtrl::COLUMN_PLAYERS:
-		return (iso1->GetPlayers() - iso2->GetPlayers()) * t;
-	case CGameListCtrl::COLUMN_REQUIREDCONTROLS: 
-		return orderSet(iso1->GetRequiredControls(), iso2->GetRequiredControls())*t;
-	case CGameListCtrl::COLUMN_OPTIONALCONTROLS: 
-		return orderSet(iso1->GetOptionalControls(), iso2->GetOptionalControls())*t;
+		break;
+		case CGameListCtrl::COLUMN_GENRE:
+			return strcasecmp(iso1->GetGenre().c_str(), iso2->GetGenre().c_str()) * t;
+		case CGameListCtrl::COLUMN_DESCRIPTION:
+			return strcasecmp(iso1->GetDescription().c_str(), iso2->GetDescription().c_str()) * t;
+		case CGameListCtrl::COLUMN_ONLINEPLAYERS:
+			return (iso1->GetOnlinePlayers() - iso2->GetOnlinePlayers()) * t;
+		case CGameListCtrl::COLUMN_PLAYERS:
+			return (iso1->GetPlayers() - iso2->GetPlayers()) * t;
+		case CGameListCtrl::COLUMN_REQUIREDCONTROLS:
+			return orderSet(iso1->GetRequiredControls(), iso2->GetRequiredControls())*t;
+		case CGameListCtrl::COLUMN_OPTIONALCONTROLS:
+			return orderSet(iso1->GetOptionalControls(), iso2->GetOptionalControls())*t;
 	}
 
 	return 0;
@@ -287,19 +292,18 @@ void CGameListCtrl::Update()
 		InsertColumn(COLUMN_PLATFORM, "");
 		InsertColumn(COLUMN_BANNER, _("Banner"));
 		InsertColumn(COLUMN_TITLE, _("Title"));
-
 		InsertColumn(COLUMN_MAKER, _("Maker"));
-		InsertColumn(COLUMN_GENRE, _("Genre"));
-		InsertColumn(COLUMN_DESCRIPTION, _("Description"));
-		InsertColumn(COLUMN_ONLINEPLAYERS, _("OnlinePlayers"));
-		InsertColumn(COLUMN_PLAYERS, _("Players"));
-		InsertColumn(COLUMN_REQUIREDCONTROLS, _("RequiredControls"));
-		InsertColumn(COLUMN_OPTIONALCONTROLS, _("OptionalControls"));
 		InsertColumn(COLUMN_FILENAME, _("File"));
 		InsertColumn(COLUMN_ID, _("ID"));
+		InsertColumn(COLUMN_GENRE, _("Genre"));
+		InsertColumn(COLUMN_PLAYERS, _("Players"));
+		InsertColumn(COLUMN_ONLINEPLAYERS, _("OnlinePlayers"));
+		InsertColumn(COLUMN_REQUIREDCONTROLS, _("RequiredControls"));
+		InsertColumn(COLUMN_OPTIONALCONTROLS, _("OptionalControls"));
 		InsertColumn(COLUMN_COUNTRY, "");
 		InsertColumn(COLUMN_SIZE, _("Size"));
 		InsertColumn(COLUMN_EMULATION_STATE, _("State"));
+		InsertColumn(COLUMN_DESCRIPTION, _("Description"));
 
 #ifdef __WXMSW__
 		const int platform_padding = 0;
@@ -472,32 +476,32 @@ void CGameListCtrl::UpdateItemAtColumn(long _Index, int column)
 		case COLUMN_ID:
 			SetItem(_Index, COLUMN_ID, rISOFile.GetUniqueID(), -1);
 			break;
-	case COLUMN_GENRE:
-		SetItem(_Index, COLUMN_GENRE, StrToWxStr(rISOFile.GetGenre()), -1);
-		break;
-	case COLUMN_DESCRIPTION:
-		SetItem(_Index, COLUMN_DESCRIPTION, StrToWxStr(rISOFile.GetDescription()), -1);
-		break;
-	case COLUMN_ONLINEPLAYERS: {
-		int c = rISOFile.GetOnlinePlayers();
-		if (c >= 0) {
-			SetItem(_Index, COLUMN_ONLINEPLAYERS, StrToWxStr(std::to_string(c)), -1);
+		case COLUMN_GENRE:
+			SetItem(_Index, COLUMN_GENRE, StrToWxStr(rISOFile.GetGenre()), -1);
+			break;
+		case COLUMN_DESCRIPTION:
+			SetItem(_Index, COLUMN_DESCRIPTION, StrToWxStr(rISOFile.GetDescription()), -1);
+			break;
+		case COLUMN_ONLINEPLAYERS: {
+			int c = rISOFile.GetOnlinePlayers();
+			if (c >= 0) {
+				SetItem(_Index, COLUMN_ONLINEPLAYERS, StrToWxStr(std::to_string(c)), -1);
+			}
+			break;
 		}
-		break;
-	}
-	case COLUMN_PLAYERS: {
-		int c = rISOFile.GetPlayers();
-		if (c >= 0) {
-			SetItem(_Index, COLUMN_PLAYERS, StrToWxStr(std::to_string(c)), -1);
+		case COLUMN_PLAYERS: {
+			int c = rISOFile.GetPlayers();
+			if (c >= 0) {
+				SetItem(_Index, COLUMN_PLAYERS, StrToWxStr(std::to_string(c)), -1);
+			}
+			break;
 		}
-		break;
-	}
-	case COLUMN_REQUIREDCONTROLS:
-		SetItem(_Index, COLUMN_REQUIREDCONTROLS, StrToWxStr(Join(rISOFile.GetRequiredControls(), ",")), -1);
-		break;
-	case COLUMN_OPTIONALCONTROLS:
-		SetItem(_Index, COLUMN_OPTIONALCONTROLS, StrToWxStr(Join(rISOFile.GetOptionalControls(), ",")), -1);
-		break;
+		case COLUMN_REQUIREDCONTROLS:
+			SetItem(_Index, COLUMN_REQUIREDCONTROLS, StrToWxStr(Join(rISOFile.GetRequiredControls(), ",")), -1);
+			break;
+		case COLUMN_OPTIONALCONTROLS:
+			SetItem(_Index, COLUMN_OPTIONALCONTROLS, StrToWxStr(Join(rISOFile.GetOptionalControls(), ",")), -1);
+			break;
 	}
 }
 
@@ -801,7 +805,7 @@ static int wxCALLBACK wxListCompare(wxIntPtr item1, wxIntPtr item2, wxIntPtr sor
 
 void CGameListCtrl::OnColumnClick(wxListEvent& event)
 {
-	if (event.GetColumn() != COLUMN_BANNER)
+	//if (event.GetColumn() != COLUMN_BANNER)
 	{
 		int current_column = event.GetColumn();
 		if (sorted)

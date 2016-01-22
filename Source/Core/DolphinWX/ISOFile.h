@@ -64,6 +64,7 @@ public:
 
 #if defined(HAVE_WX) && HAVE_WX
 	const wxBitmap& GetBitmap() const {return m_Bitmap;}
+	const bool HasBanner() const { return m_has_banner; }
 #endif
 
 	void DoState(PointerWrap &p);
@@ -96,6 +97,7 @@ private:
 
 #if defined(HAVE_WX) && HAVE_WX
 	wxBitmap m_Bitmap;
+	bool m_has_banner;
 #endif
 	bool m_Valid;
 	std::vector<u8> m_pImage;
