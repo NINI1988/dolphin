@@ -55,6 +55,7 @@ public:
 	u64 GetVolumeSize() const {return m_VolumeSize;}
 	// 0 is the first disc, 1 is the second disc
 	u8 GetDiscNumber() const { return m_disc_number; }
+	const bool HasBanner() const { return m_has_banner; }
 
 	void SetGenre(std::string genre) { m_genre = genre; }
 	void SetOnlinePlayers(int OnlinePlayers) { m_onlinePlayers = OnlinePlayers; }
@@ -64,7 +65,6 @@ public:
 
 #if defined(HAVE_WX) && HAVE_WX
 	const wxBitmap& GetBitmap() const {return m_Bitmap;}
-	const bool HasBanner() const { return m_has_banner; }
 #endif
 
 	void DoState(PointerWrap &p);
@@ -97,13 +97,14 @@ private:
 
 #if defined(HAVE_WX) && HAVE_WX
 	wxBitmap m_Bitmap;
-	bool m_has_banner;
 #endif
 	bool m_Valid;
 	std::vector<u8> m_pImage;
 	int m_ImageWidth, m_ImageHeight;
 	u8 m_disc_number;
 
+	bool m_has_banner;
+	
 	std::string m_custom_name;
 	bool m_has_custom_name;
 
