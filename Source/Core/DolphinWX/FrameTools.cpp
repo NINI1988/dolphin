@@ -2006,7 +2006,22 @@ void CFrame::OnChangeColumnsVisible(wxCommandEvent& event)
 {
 	switch (event.GetId())
 	{
-		case IDM_SHOW_SYSTEM:           SConfig::GetInstance().m_showSystemColumn           = !SConfig::GetInstance().m_showSystemColumn;           break;		case IDM_SHOW_BANNER:           SConfig::GetInstance().m_showBannerColumn           = !SConfig::GetInstance().m_showBannerColumn;           break;		case IDM_SHOW_MAKER:            SConfig::GetInstance().m_showMakerColumn            = !SConfig::GetInstance().m_showMakerColumn;            break;		case IDM_SHOW_FILENAME:         SConfig::GetInstance().m_showFileNameColumn         = !SConfig::GetInstance().m_showFileNameColumn;         break;		case IDM_SHOW_ID:               SConfig::GetInstance().m_showIDColumn               = !SConfig::GetInstance().m_showIDColumn;               break;		case IDM_SHOW_REGION:           SConfig::GetInstance().m_showRegionColumn           = !SConfig::GetInstance().m_showRegionColumn;           break;		case IDM_SHOW_SIZE:             SConfig::GetInstance().m_showSizeColumn             = !SConfig::GetInstance().m_showSizeColumn;             break;		case IDM_SHOW_STATE:            SConfig::GetInstance().m_showStateColumn            = !SConfig::GetInstance().m_showStateColumn;            break;		case IDM_SHOW_GENRE:            SConfig::GetInstance().m_showGenreColumn            = !SConfig::GetInstance().m_showGenreColumn;            break;		case IDM_SHOW_DESCRIPTION:      SConfig::GetInstance().m_showDescriptionColumn      = !SConfig::GetInstance().m_showDescriptionColumn;      break;		case IDM_SHOW_ONLINEPLAYERS:    SConfig::GetInstance().m_showOnlinePlayersColumn    = !SConfig::GetInstance().m_showOnlinePlayersColumn;    break;		case IDM_SHOW_PLAYERS:          SConfig::GetInstance().m_showPlayersColumn          = !SConfig::GetInstance().m_showPlayersColumn;          break;		case IDM_SHOW_REQUIREDCONTROLS: SConfig::GetInstance().m_showRequiredControlsColumn = !SConfig::GetInstance().m_showRequiredControlsColumn; break;		case IDM_SHOW_OPTIONALCONTROLS: SConfig::GetInstance().m_showOptionalControlsColumn = !SConfig::GetInstance().m_showOptionalControlsColumn; break;		default: return;
+		case IDM_SHOW_SYSTEM:           SConfig::GetInstance().m_showSystemColumn           = !SConfig::GetInstance().m_showSystemColumn;           break;
+		case IDM_SHOW_BANNER:           SConfig::GetInstance().m_showBannerColumn           = !SConfig::GetInstance().m_showBannerColumn;           break;
+		case IDM_SHOW_MAKER:            SConfig::GetInstance().m_showMakerColumn            = !SConfig::GetInstance().m_showMakerColumn;            break;
+		case IDM_SHOW_FILENAME:         SConfig::GetInstance().m_showFileNameColumn         = !SConfig::GetInstance().m_showFileNameColumn;         break;
+		case IDM_SHOW_ID:               SConfig::GetInstance().m_showIDColumn               = !SConfig::GetInstance().m_showIDColumn;               break;
+		case IDM_SHOW_REGION:           SConfig::GetInstance().m_showRegionColumn           = !SConfig::GetInstance().m_showRegionColumn;           break;
+		case IDM_SHOW_SIZE:             SConfig::GetInstance().m_showSizeColumn             = !SConfig::GetInstance().m_showSizeColumn;             break;
+		case IDM_SHOW_STATE:            SConfig::GetInstance().m_showStateColumn            = !SConfig::GetInstance().m_showStateColumn;            break;
+		case IDM_SHOW_GENRE:            SConfig::GetInstance().m_showGenreColumn            = !SConfig::GetInstance().m_showGenreColumn;            break;
+		case IDM_SHOW_DESCRIPTION:      SConfig::GetInstance().m_showDescriptionColumn      = !SConfig::GetInstance().m_showDescriptionColumn;      break;
+		case IDM_SHOW_ONLINEPLAYERS:    SConfig::GetInstance().m_showOnlinePlayersColumn    = !SConfig::GetInstance().m_showOnlinePlayersColumn;    break;
+		case IDM_SHOW_PLAYERS:          SConfig::GetInstance().m_showPlayersColumn          = !SConfig::GetInstance().m_showPlayersColumn;          break;
+		case IDM_SHOW_REQUIREDCONTROLS: SConfig::GetInstance().m_showRequiredControlsColumn = !SConfig::GetInstance().m_showRequiredControlsColumn; break;
+		case IDM_SHOW_OPTIONALCONTROLS: SConfig::GetInstance().m_showOptionalControlsColumn = !SConfig::GetInstance().m_showOptionalControlsColumn; break;
+
+		default: return;
 	}
 	m_GameListCtrl->Update();
 	SConfig::GetInstance().SaveSettings();
